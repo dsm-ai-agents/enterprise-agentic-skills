@@ -9,38 +9,36 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Name, email, and company are required.' });
   }
 
-  const token = process.env.NOCODB_API_TOKEN;
-  const tableId = process.env.NOCODB_TABLE_ID;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_ANON_KEY;
 
-  if (!token || !tableId) {
-    console.error('Missing NOCODB_API_TOKEN or NOCODB_TABLE_ID');
+  if (!url || !key) {
     return res.status(500).json({ error: 'Server configuration error.' });
   }
 
   try {
-    const response = await fetch(
-      `https://app.nocodb.com/api/v2/tables/${tableId}/records`,
-      {
-        method: 'POST',
-        headers: {
-          'xc-token': token,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Name: name,
-          Email: email,
-          Company: company,
-          Size: size || '',
-          Workflow: workflow || '',
-          Tools: tools || '',
-          Timeline: timeline || '',
-        }),
-      }
-    );
+    const response = await fetch(`${url}/rest/v1/contact_submissions`, {
+      method: 'POST',
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        company,
+        size: size || null,
+        workflow: workflow || null,
+        tools: tools || null,
+        timeline: timeline || null,
+      }),
+    });
 
     if (!response.ok) {
       const err = await response.text();
-      console.error('NocoDB error:', err);
+      console.error('Supabase error:', response.status, err);
       return res.status(502).json({ error: 'Failed to save submission.' });
     }
 
