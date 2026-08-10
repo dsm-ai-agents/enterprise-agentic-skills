@@ -45,7 +45,8 @@
 <div class="content-grid">
   <div class="content-block">
     <h2>Assessment Form</h2>
-    <form action="https://formspree.io/f/your-form-id" method="POST">
+    <form id="assessment-form" method="POST">
+      <div id="form-status" style="display:none; padding:0.8rem; border-radius:var(--radius); margin-bottom:1rem;"></div>
       <div class="form-group"><label for="name">Name *</label><input type="text" id="name" name="name" required></div>
       <div class="form-group"><label for="email">Work Email *</label><input type="email" id="email" name="email" required></div>
       <div class="form-group"><label for="company">Company *</label><input type="text" id="company" name="company" required></div>
@@ -91,5 +92,41 @@
     <p>&copy; 2026 Enterprise Agentic Skills. Enterprise AI Agent Consulting &amp; Agentic Skills Training in India.</p>
   </div>
 </footer>
+<script>
+document.getElementById('assessment-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  const status = document.getElementById('form-status');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  status.style.display = 'none';
+
+  try {
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData);
+    const res = await fetch('/api/submit-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      status.style.display = 'block';
+      status.style.background = '#ecfdf5';
+      status.style.color = '#065f46';
+      status.textContent = 'Submitted! We will respond within one business day to schedule your session.';
+      e.target.reset();
+    } else {
+      throw new Error('Server error');
+    }
+  } catch (err) {
+    status.style.display = 'block';
+    status.style.background = '#fef2f2';
+    status.style.color = '#991b1b';
+    status.textContent = 'Something went wrong. Please email me@kunaalnaik.com directly.';
+  }
+  btn.disabled = false;
+  btn.textContent = 'Submit Assessment Request';
+});
+</script>
 </body>
 </html>
