@@ -48,11 +48,12 @@ nav {
 .nav-links a { color: var(--text-secondary); text-decoration: none; transition: color 0.15s; font-weight: 500; }
 .nav-links a:hover { color: var(--accent); }
 .nav-cta {
-  background: var(--accent); color: #fff; padding: 0.4rem 0.9rem;
+  background: var(--surface); color: var(--accent); border: 1.5px solid var(--accent);
+  padding: 0.4rem 0.9rem;
   border-radius: var(--radius); text-decoration: none; font-size: 0.825rem; font-weight: 600;
-  transition: background 0.15s; white-space: nowrap;
+  transition: all 0.15s; white-space: nowrap;
 }
-.nav-cta:hover { background: var(--accent-hover); }
+.nav-cta:hover { background: var(--accent); color: #fff; }
 
 /* Mobile nav toggle */
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 0.3rem; }
